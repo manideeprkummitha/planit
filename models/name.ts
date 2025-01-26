@@ -1,0 +1,5 @@
+export const db = "plan-it"
+export const usersCollection = "users"
+export const bucketsCollection = "buckets"
+export const bucketsTableCollection = "buckets-table"
+export const tasksCollection = "tasks"
