@@ -1,10 +1,8 @@
 // Priority Levels
 export const PRIORITY_LEVELS = [
-    { label: 'Urgent', value: 'urgent' },
     { label: 'High', value: 'high' },
     { label: 'Medium', value: 'medium' },
     { label: 'Low', value: 'low' },
-    { label: 'None', value: 'none' },
   ];
   
   // Task Types

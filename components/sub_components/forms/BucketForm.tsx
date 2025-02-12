@@ -151,7 +151,7 @@ const BucketForm: React.FC<BucketFormProps> = ({
         <p className="text-sm">Bucket Tags</p>
         <div className="w-[252px]">
           <Input
-            placeholder="Bucket Tag"
+            placeholder="Enter a Bucket Tag"
             value={bucketTag}
             onChange={(e) => setBucketTag(e.target.value)}
             className="border-b-1"

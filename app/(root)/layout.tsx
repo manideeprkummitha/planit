@@ -40,7 +40,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Separator orientation="vertical" className="mr-2 h-4" />
 
               {/* Breadcrumb Component */}
-              <Breadcrumb>
+              {/* <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem className="hidden md:block">
                     <BreadcrumbLink href="#">Home</BreadcrumbLink>
@@ -54,12 +54,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <BreadcrumbPage>Current Page</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
-              </Breadcrumb>
+              </Breadcrumb> */}
             </div>
           </header>
 
           {/* Main Content Section */}
-          <div className="flex-grow p-4 ">{children}</div>
+          <div className="flex-grow  bg-[#F5F7F9]">{children}</div>
           <Toaster />
         </SidebarInset>
       </SidebarProvider>

@@ -22,9 +22,9 @@ interface DialogBaseProps {
 const DialogBase:React.FC<DialogBaseProps> = ({open, onOpenChange, title,description, children, footer}) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='sm:max-w-[425px] min-h-8'>
-            <DialogHeader >
-                <DialogTitle >{title}</DialogTitle>
+        <DialogContent className='sm:max-w-[425px] min-h-8 '>
+            <DialogHeader className='mb-2'>
+                <DialogTitle className='' >{title}</DialogTitle>
                 {description && <div className="text-sm text-muted-foreground">{description}</div>}
             </DialogHeader>
             {/* <DialogDescription> */}

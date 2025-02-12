@@ -8,7 +8,7 @@ import getOrCreateDB from './models/server/dbSetup'
 export async function middleware(request: NextRequest) {
   
   await Promise.all([
-    getOrCreateDB(),
+    // getOrCreateDB(),
     // getOrCreateStorage()
   ])
   return NextResponse.next()

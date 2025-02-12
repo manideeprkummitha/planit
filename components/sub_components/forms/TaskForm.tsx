@@ -1,76 +1,71 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
-import { STATUSES, PRIORITY_LEVELS } from '@/utils/constants';
+import React from "react";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import { STATUSES, PRIORITY_LEVELS } from "@/utils/constants";
 
 interface TaskFormProps {
-  mode: 'add' | 'edit' | 'view';
-  taskData?: {
+  mode: "add" | "edit" | "view";
+  bucket_id: string; // Bucket ID from parent
+  taskData: {
     id: string;
-    title: string;
-    status: string;
-    priority: string;
-    taskTime: string;
-    delegatedTo: string;
-    isMeeting: boolean;
-    notifyMe: boolean;
-    notes: string;
+    task_title: string;
+    task_description: string;
+    task_status: string;
+    task_priority: string;
+    task_due_date: string; // Includes both date & time
+    task_delegated_to: string;
+    task_meeting: boolean;
+    task_notify: boolean;
+    task_notes: string; // Additional notes
   };
-  onSubmit: (data: any) => void;
+  onChange: (key: string, value: any) => void;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ mode, taskData, onSubmit }) => {
-  const [title, setTitle] = useState(taskData?.title || '');
-  const [status, setStatus] = useState(taskData?.status || '');
-  const [priority, setPriority] = useState(taskData?.priority || '');
-  const [taskTime, setTaskTime] = useState(taskData?.taskTime || '');
-  const [delegatedTo, setDelegatedTo] = useState(taskData?.delegatedTo || '');
-  const [isMeeting, setIsMeeting] = useState(taskData?.isMeeting || false);
-  const [notifyMe, setNotifyMe] = useState(taskData?.notifyMe || false);
-  const [notes, setNotes] = useState(taskData?.notes || '');
-
-  const isViewMode = mode === 'view';
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isViewMode) return; // Do nothing in view mode
-    onSubmit({
-      title,
-      status,
-      priority,
-      taskTime,
-      delegatedTo,
-      isMeeting,
-      notifyMe,
-      notes,
-    });
-  };
+const TaskForm: React.FC<TaskFormProps> = ({ mode, taskData, onChange }) => {
+  const isViewMode = mode === "view";
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-1 w-full max-h-80 max-w-md overflow-y-auto custom-scrollbar">
-      {/* Title */}
+    <div className="flex flex-col gap-4 p-1 w-full max-h-80 max-w-md overflow-y-auto custom-scrollbar">
+      {/* Task Title */}
       <div>
         <label className="block text-sm font-medium mb-1">Task Title</label>
         <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={taskData.task_title}
+          onChange={(e) => onChange("task_title", e.target.value)}
           placeholder="Enter task title"
           disabled={isViewMode}
           required
         />
       </div>
 
-      {/* Status */}
+      {/* Task Description */}
       <div>
-        <label className="block text-sm font-medium mb-1">Status</label>
+        <label className="block text-sm font-medium mb-1">Task Description</label>
+        <Textarea
+          value={taskData.task_description}
+          onChange={(e) => onChange("task_description", e.target.value)}
+          placeholder="Enter task description"
+          disabled={isViewMode}
+          className="w-full"
+        />
+      </div>
+
+      {/* Task Status */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Task Status</label>
         <Select
-          value={status}
-          onValueChange={(value) => setStatus(value)}
+          value={taskData.task_status}
+          onValueChange={(value) => onChange("task_status", value)}
           disabled={isViewMode}
         >
           <SelectTrigger className="w-full">
@@ -86,12 +81,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, taskData, onSubmit }) => {
         </Select>
       </div>
 
-      {/* Priority */}
+      {/* Task Priority */}
       <div>
-        <label className="block text-sm font-medium mb-1">Priority</label>
+        <label className="block text-sm font-medium mb-1">Task Priority</label>
         <Select
-          value={priority}
-          onValueChange={(value) => setPriority(value)}
+          value={taskData.task_priority}
+          onValueChange={(value) => onChange("task_priority", value)}
           disabled={isViewMode}
         >
           <SelectTrigger className="w-full">
@@ -107,70 +102,62 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, taskData, onSubmit }) => {
         </Select>
       </div>
 
-      {/* Task Time */}
+      {/* Task Due Date (Date & Time) */}
       <div>
-        <label className="block text-sm font-medium mb-1">Task Time</label>
+        <label className="block text-sm font-medium mb-1">Due Date & Time</label>
         <Input
-          type="time"
-          value={taskTime}
-          onChange={(e) => setTaskTime(e.target.value)}
-          placeholder="Enter task time"
+          type="datetime-local"
+          value={taskData.task_due_date}
+          onChange={(e) => onChange("task_due_date", e.target.value)}
+          placeholder="Select due date & time"
           disabled={isViewMode}
           required
         />
       </div>
 
-      {/* Delegated To */}
+      {/* Task Delegated To */}
       <div>
         <label className="block text-sm font-medium mb-1">Delegated To</label>
         <Input
-          value={delegatedTo}
-          onChange={(e) => setDelegatedTo(e.target.value)}
+          value={taskData.task_delegated_to}
+          onChange={(e) => onChange("task_delegated_to", e.target.value)}
           placeholder="Enter assignee name"
           disabled={isViewMode}
-          required
         />
       </div>
 
-      {/* Is Meeting */}
+      {/* Task Meeting */}
       <div className="flex items-center gap-4 justify-between w-full">
         <label className="text-sm font-medium">Is it a Meeting?</label>
         <Switch
-          checked={isMeeting}
-          onCheckedChange={(value) => setIsMeeting(value)}
+          checked={taskData.task_meeting}
+          onCheckedChange={(value) => onChange("task_meeting", value)}
           disabled={isViewMode}
         />
       </div>
 
-      {/* Notify Me */}
+      {/* Task Notify */}
       <div className="flex items-center gap-4 justify-between w-full">
         <label className="text-sm font-medium">Notify Me</label>
         <Switch
-          checked={notifyMe}
-          onCheckedChange={(value) => setNotifyMe(value)}
+          checked={taskData.task_notify}
+          onCheckedChange={(value) => onChange("task_notify", value)}
           disabled={isViewMode}
         />
       </div>
 
-      {/* Notes */}
+      {/* Task Notes */}
       <div>
         <label className="block text-sm font-medium mb-1">Notes</label>
         <Textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Enter notes"
+          value={taskData.task_notes}
+          onChange={(e) => onChange("task_notes", e.target.value)}
+          placeholder="Enter additional notes"
           disabled={isViewMode}
           className="w-full"
         />
       </div>
-
-      {/* Submit Button */}
-      {mode !== 'view' && (
-        <Button type="submit" className="w-full">
-          {mode === 'add' ? 'Add Task' : 'Update Task'}
-        </Button>
-      )}
-    </form>
+    </div>
   );
 };
 

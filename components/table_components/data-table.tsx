@@ -31,11 +31,20 @@ import { DataTableToolbar } from "./data-table-toolbar"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+
+  /**
+   * Optional error message to display inside table
+   * if something went wrong or your data fetch failed.
+   */
+  errorMessage?: string
+  bucket_Id:string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  errorMessage,
+  bucket_Id
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -69,15 +78,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} bucket_Id={bucket_Id}/>
       <div className="rounded-md border">
-        <Table className="rounded-t-md overflow-hidden  ">
+        <Table className="rounded-t-md overflow-hidden">
           <TableHeader className="bg-[#059669] rounded-t-md hover:none hover:text-white">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="text-white rounded-t-md hover:bg-transparent hover:text-white">
+              <TableRow
+                key={headerGroup.id}
+                className="text-white rounded-t-md hover:bg-transparent hover:text-white"
+              >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan} className="text-white hover:none">
+                    <TableHead key={header.id} colSpan={header.colSpan} className="text-white">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -91,7 +103,22 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {/** 
+             * 1) If we have an error message, show it and skip rendering data 
+             */}
+            {errorMessage ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-red-500"
+                >
+                  {errorMessage}
+                </TableCell>
+              </TableRow>
+            ) : /** 
+                * 2) No error => check if we have any rows 
+                */
+            table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -108,12 +135,10 @@ export function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
+              /** 3) If rows are empty => "No tasks present" */
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No tasks present.
                 </TableCell>
               </TableRow>
             )}

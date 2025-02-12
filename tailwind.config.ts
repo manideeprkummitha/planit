@@ -65,7 +65,22 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		animation: {
+			wave: "wave 0.5s ease-in-out",
+			ripple: 'ripple 1.5s infinite',
+		},
+		keyframes: {
+			wave: {
+				"0%, 100%": { transform: "scaleY(1)" },
+				"50%": { transform: "scaleY(1.5)" },
+			},
+			ripple: {
+				'0%': { transform: 'scale(0.8)', opacity: '0.6' },
+				'50%': { transform: 'scale(1.2)', opacity: '0.3' },
+				'100%': { transform: 'scale(1)', opacity: '0.6' },
+			  },
+		},
   	}
   },
   plugins: [require("tailwindcss-animate")],

@@ -11,31 +11,30 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress, totalSegments }) =>
 
   // Function to determine the color of a segment based on its index
   const getSegmentColor = (index: number) => {
-    // If the segment is within the filled portion
     if (index < filledSegments) {
-      // Assign color based on progress percentage
       if (progress < 25) return "bg-red-500";
       else if (progress < 50) return "bg-orange-500";
       else if (progress < 75) return "bg-yellow-500";
       else return "bg-green-500";
     }
-    // Default color for unfilled segments
-    return "bg-gray-300";
+    return "bg-gray-300"; // Default color for unfilled segments
   };
 
   // Function to determine if hover effects should be applied
   const isHoverable = (index: number) => index < filledSegments;
 
   return (
-    // Container for the progress bar with equal spacing between segments
     <div className="flex space-x-1">
-      {/* Generate segments dynamically based on the totalSegments prop */}
+      {/* Generate segments dynamically based on totalSegments */}
       {Array.from({ length: totalSegments }, (_, index) => (
         <div
           key={index}
-          className={`h-4 w-1 rounded-md ${
-            isHoverable(index) ? "hover:scale-125 transition-transform" : ""
-          } ${getSegmentColor(index)}`} // Apply hover styles dynamically for filled segments
+          className={`h-4 w-1 rounded-md transition-transform duration-300 ${
+            isHoverable(index) ? "hover:scale-150 hover:animate-wave" : ""
+          } ${getSegmentColor(index)}`}
+          style={{
+            animationDelay: isHoverable(index) ? `${index * 50}ms` : undefined, // Delayed wave effect
+          }}
         ></div>
       ))}
     </div>

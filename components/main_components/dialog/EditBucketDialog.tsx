@@ -1,62 +1,113 @@
-'use client'
+'use client';
 
-import React,{useState} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import DialogBase from '@/components/sub_components/dialog/DialogBase';
 import BucketForm from '@/components/sub_components/forms/BucketForm';
 import DialogActions from '@/components/sub_components/dialog/DialogActions';
 
-interface BucketsDialogProps {
-    open:boolean;
-    onOpenChange:(open: boolean) => void;
-    onCreate:(bucketName:string, bucketDescription:string) => void;
+interface BucketData {
+  name: string;
+  description: string;
+  priority: string;
+  type: string;
+  status: string;
+  tag: string;
 }
 
-const EditBucketDialog:React.FC<BucketsDialogProps> = ({open, onOpenChange, onCreate}) => {
-    const [bucketName, setBucketName] = useState(''); // State to store the bucket name
-    const [bucketDescription, setBucketDescription] = useState(''); // State to store the bucket description
-    const [bucketPriority, setBucketPriority] = useState(''); // State to store the bucket priority
-    const [bucketType, setBucketType] = useState(''); // State to store the bucket type
-    const [bucketStatus, setBucketStatus] = useState(''); // State to store the bucket status
-    const [bucketTag, setBucketTag] = useState(''); // State to store the bucket tag
+interface EditBucketDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (bucketData: BucketData) => void; // Function to save bucket data
+  bucketData?: BucketData; // Optional bucket data for editing
+}
 
-    const handleCreate = () => {
-        onCreate(bucketName, bucketDescription);
-        setBucketName(''); // Clear the bucket name after creation
-        setBucketDescription(''); // Clear the bucket description after creation
-        onOpenChange(false); // Close the dialog
+const EditBucketDialog: React.FC<EditBucketDialogProps> = ({
+  open,
+  onOpenChange,
+  onSave,
+  bucketData,
+}) => {
+  const [formData, setFormData] = useState<BucketData>({
+    name: '',
+    description: '',
+    priority: '',
+    type: '',
+    status: '',
+    tag: '',
+  });
+
+  // Populate form data when dialog opens for editing
+  useEffect(() => {
+    if (bucketData) {
+      setFormData(bucketData);
     }
+  }, [bucketData]);
+
+  const handleSave = () => {
+    onSave(formData); // Save the updated bucket data
+    onOpenChange(false); // Close the dialog
+  };
+
+  const handleCancel = () => {
+    onOpenChange(false); // Close the dialog without saving
+  };
 
   return (
     <DialogBase
       open={open}
       onOpenChange={onOpenChange}
-      title='Create Bucket'
+      title="Edit Bucket"
       footer={
         <DialogActions
-          onCancel={() => onOpenChange(false)}
-          onCreate={handleCreate}
+          buttons={[
+            {
+              text: 'Cancel',
+              color: 'bg-red-600 hover:bg-red-700 text-white',
+              onClick: handleCancel,
+            },
+            {
+              text: 'Save',
+              color: 'bg-blue-600 hover:bg-blue-700 text-white',
+              onClick: handleSave,
+            },
+          ]}
         />
       }
     >
       <BucketForm
-        mode='edit'
-        bucketName={bucketName}
-        bucketDescription={bucketDescription}
-        setBucketName={setBucketName}
-        setBucketDescription={setBucketDescription}
-        bucketPriority={bucketPriority}
-        setBucketPriority={setBucketPriority}
-        bucketType={bucketType}
-        setBucketType={setBucketType}
-        bucketStatus={bucketStatus}
-        setBucketStatus={setBucketStatus}
-        bucketTag={bucketTag}
-        setBucketTag={setBucketTag}
-        onSubmit={(data) => console.log('Submit:', data)}
+        mode="edit"
+        bucketName={formData.name}
+        bucketDescription={formData.description}
+        setBucketName={(value) =>
+          setFormData((prev) => ({ ...prev, name: value }))
+        }
+        setBucketDescription={(value) =>
+          setFormData((prev) => ({ ...prev, description: value }))
+        }
+        bucketPriority={formData.priority}
+        setBucketPriority={(value) =>
+          setFormData((prev) => ({ ...prev, priority: value }))
+        }
+        bucketType={formData.type}
+        setBucketType={(value) =>
+          setFormData((prev) => ({ ...prev, type: value }))
+        }
+        bucketStatus={formData.status}
+        setBucketStatus={(value) =>
+          setFormData((prev) => ({ ...prev, status: value }))
+        }
+        bucketTag={formData.tag}
+        setBucketTag={(value) =>
+          setFormData((prev) => ({ ...prev, tag: value }))
+        }
+        onSubmit={(data) => {
+          setFormData(data); // Update form data
+          handleSave(); // Save the bucket data
+        }}
       />
     </DialogBase>
-  )
-}
+  );
+};
 
-export default EditBucketDialog
+export default EditBucketDialog;
