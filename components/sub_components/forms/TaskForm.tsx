@@ -6,12 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
-  SelectTrigger,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import { STATUSES, PRIORITY_LEVELS } from "@/utils/constants";
+import { TASK_RECURRING_TIME_FREQUENCY } from "@/utils/constants";
 
 interface TaskFormProps {
   mode: "add" | "edit" | "view";
@@ -26,6 +29,8 @@ interface TaskFormProps {
     task_delegated_to: string;
     task_meeting: boolean;
     task_notify: boolean;
+    task_recurring: boolean;
+    task_recurring_frequency: string;
     task_notes: string; // Additional notes
   };
   onChange: (key: string, value: any) => void;
@@ -144,6 +149,35 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, taskData, onChange }) => {
           onCheckedChange={(value) => onChange("task_notify", value)}
           disabled={isViewMode}
         />
+      </div>
+
+      <div className="flex items-center gap-4 justify-between w-full">
+        <label className="text-sm font-medium">Recurring Task?</label>
+        <Switch
+          checked={taskData.task_recurring}
+          onCheckedChange={(value) => onChange("task_recurring", value)}
+          disabled={isViewMode}
+        />
+      </div>
+
+      <div className="flex items-center gap-4 justify-between w-full">
+        <label className="text-sm font-medium">Recurring Frequency</label>        
+        <Select
+          value={taskData.task_recurring_frequency}
+          onValueChange={(value) => onChange("task_recurring_frequency", value)}
+          disabled={isViewMode}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select frequency" />
+          </SelectTrigger>
+          <SelectContent>
+            {TASK_RECURRING_TIME_FREQUENCY.map((frequency) => (
+              <SelectItem key={frequency} value={frequency}>
+                {frequency}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Task Notes */}

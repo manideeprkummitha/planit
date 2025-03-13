@@ -114,7 +114,7 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     enableSorting: false,
-    enableHiding: false,
+    // enableHiding: false,
   },
   {
     accessorKey: "task_delegated_to",
@@ -127,7 +127,7 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     enableSorting: false,
-    enableHiding: false,
+    // enableHiding: false,
   },
   {
     accessorKey: "task_meeting",
@@ -140,7 +140,7 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     enableSorting: false,
-    enableHiding: false,
+    // enableHiding: false,
   },
   {
     accessorKey: "task_notify",
@@ -153,7 +153,7 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     enableSorting: false,
-    enableHiding: false,
+    // enableHiding: false,
   },
   {
     accessorKey: "task_recurring",
@@ -166,7 +166,7 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     enableSorting: false,
-    enableHiding: false,
+    // enableHiding: false,
   },
   {
     accessorKey: "task_notes",
@@ -179,7 +179,7 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     enableSorting: false,
-    enableHiding: false,
+    // enableHiding: false,
   },
   {
     id: "actions",

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from "@/hooks/use-toast";
 import { Ellipsis, Edit, Trash, Paperclip, MessageSquare } from 'lucide-react';
 import EditBucketDialog from "@/components/main_components/dialog/EditBucketDialog";
+import BucketsDeleteDialog from '../dialog/BucketsDeleteDialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProgressBar from '@/components/sub_components/progress_bar/progress_bar';
 
@@ -48,6 +49,7 @@ const Buckets_cards: React.FC<BucketsCardProps> = ({
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,8 +70,9 @@ const Buckets_cards: React.FC<BucketsCardProps> = ({
   };
 
   const handleConfirmDelete = () => {
-    setShowDropdown(false);
-    onDelete();
+    // setShowDropdown(false);
+    setShowDeleteDialog(true);
+    // onDelete();
   };
 
   const handleCardClick = () => {
@@ -173,9 +176,21 @@ const Buckets_cards: React.FC<BucketsCardProps> = ({
 
       {showEditDialog && (
         <EditBucketDialog
+          bucket_id={id}
           open={showEditDialog}
           onOpenChange={setShowEditDialog}
+          
           onCreate={(newName, newDescription) => onEdit(newName, newDescription)}
+        />
+      )}
+
+      {showDeleteDialog && (
+        <BucketsDeleteDialog
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          onDelete={onDelete}
+          bucketName={name}
+          bucket_id={id}
         />
       )}
     </>

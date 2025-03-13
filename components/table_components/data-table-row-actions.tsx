@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal, Trash, Pencil, Eye, File } from "lucide-react";
 
@@ -22,6 +22,9 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"view" | "edit">("view");
+  const [taskData, setTaskData] = useState<any>(null);
+
+  
 
   const task = taskSchema.safeParse(row.original);
 

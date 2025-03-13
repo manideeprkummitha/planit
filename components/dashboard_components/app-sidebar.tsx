@@ -197,23 +197,7 @@ const data = {
     //     }
     //   ],
     // },
-    {
-      title: "Notes",
-      url: "/notes",
-      icon: NotebookIcon,
-      isActive: true,
-      // items: [
-      //   {
-      //     title: "Text Notes",
-      //     url: "#",
-      //   },
-      //   {
-      //     title: "Voice Notes",
-      //     url: "#",
-      //   },
-      // ],
-    },
-   
+    
     // {
     //     title: "Reports and Analytics",
     //     url: "#",
@@ -234,18 +218,18 @@ const data = {
     //       },
     //     ],
     //   },
-    {
-        title:"Notifications",
-        url:"/notifications",
-        icon:Bell,
-        isActive:false
-    },
-    {
-      title: "Pomodoro",
-      url: "/pomodoro",
-      icon: Timer,
-      isActive: false,
-    },
+    // {
+    //     title:"Notifications",
+    //     url:"/notifications",
+    //     icon:Bell,
+    //     isActive:false
+    // },
+    // {
+    //   title: "Pomodoro",
+    //   url: "/pomodoro",
+    //   icon: Timer,
+    //   isActive: false,
+    // },
   ],
 //   projects: [
 //     {

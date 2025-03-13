@@ -24,6 +24,8 @@ import StatusBadge from "@/components/sub_components/badges/statusbadge";
 import TypeBadge from "@/components/sub_components/badges/typebadge";
 import TagBadge from "@/components/sub_components/badges/tagbadge";
 
+import { getLatestDueDate } from "@/utils/helper";
+
 export default function Page() {
   const { id } = useParams();
   const [bucketDetails, setBucketDetails] = useState<any>(null);
@@ -34,6 +36,7 @@ export default function Page() {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [dueDate, setDueDate] = useState<string | null>(null);
 
   const descRef = useRef<HTMLDivElement>(null);
 
@@ -59,9 +62,26 @@ export default function Page() {
         if (!response.ok) {
           throw new Error("Error fetching tasks for this bucket");
         }
-        const data = await response.json();
-        const validatedTasks = z.array(taskSchema).parse(data);
-        setTasks(validatedTasks);
+        const taskdata = await response.json();
+        console.log("Tasks data:", taskdata);
+        // const validatedTasks = z.array(taskSchema).parse(data);
+
+        // Sort tasks so the most recently created is at the top
+        // If your tasks have a different timestamp field, replace "$createdAt"
+        const sortedByLatest = [...taskdata].sort(
+          (a, b) =>
+            new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime()
+        );
+
+        setTasks(sortedByLatest);
+        console.log("Sorted tasks:", sortedByLatest);
+
+        // get the latest due date from tasks
+        const latestDueDate = getLatestDueDate(sortedByLatest);
+        console.log("Latest due date:", latestDueDate);
+
+        // update the due date state
+        setDueDate(latestDueDate);
       } catch (error) {
         console.error("Error fetching tasks for bucket:", error);
         setTasks([]);
@@ -190,7 +210,12 @@ export default function Page() {
                     <Sun className="size-4 text-gray-700" />
                     <span className="text-md text-gray-700">Status</span>
                   </div>
-                  <StatusBadge status={bucketDetails.status} />
+                  <div className="flex gap-2 items-center justify-end">
+                    <StatusBadge status={bucketDetails.status} />
+                    <span className="text-md first-letter:uppercase ">
+                      {bucketDetails.status}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between w-full max-w-[600px]">
@@ -206,9 +231,11 @@ export default function Page() {
                     <CircleCheck className="size-4 text-gray-700" />
                     <span className="text-md text-gray-700">Tag</span>
                   </div>
-                  {bucketDetails.tag.map((tag: string) => (
-                    <TagBadge key={tag} tag={tag} />
-                  ))}
+                  <div className="flex gap-1 flex-wrap">
+                    {bucketDetails.tag.map((tag: string) => (
+                      <TagBadge key={tag} tag={tag} />
+                    ))}
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between w-full max-w-[600px]">
@@ -216,9 +243,7 @@ export default function Page() {
                     <CalendarIcon className="size-4 text-gray-700" />
                     <span className="text-md text-gray-700">Due Date</span>
                   </div>
-                  <span className="text-md">
-                    {bucketDetails.due_date || "No due date"}
-                  </span>
+                  <span className="text-md">{dueDate || "No due date"}</span>
                 </div>
               </div>
             )}
@@ -232,13 +257,14 @@ export default function Page() {
             data={tasks}
             columns={columns}
             errorMessage={fetchError || undefined}
-            bucket_Id={id} 
+            bucket_Id={id}
           />
         </div>
       </div>
 
       {showEditDialog && (
         <EditBucketDialog
+          bucket_id={id}
           open={showEditDialog}
           onOpenChange={setShowEditDialog}
           onCreate={(bucketName, bucketDescription) =>

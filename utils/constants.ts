@@ -1,3 +1,5 @@
+import { Label } from "@radix-ui/react-dropdown-menu";
+
 // Priority Levels
 export const PRIORITY_LEVELS = [
     { label: 'High', value: 'high' },
@@ -25,7 +27,20 @@ export const PRIORITY_LEVELS = [
 export const STATUSES = [
   { label: 'Not Started', value: 'not_started' },
   { label: 'In Progress', value: 'in_progress' },
-  { label: 'Completed', value: 'completed' },
+  { label: 'Started', value: 'Not Started' },
+  {Label:"Completed", value:"Completed"},
   { label: 'On Hold', value: 'on_hold' },
   { label: 'Cancelled', value: 'cancelled' },
+];
+
+
+export const TASK_RECURRING_TIME_FREQUENCY = [
+  "Daily",
+  "Weekly",
+  "Bi-Weekly",
+  "Monthly",
+  "Quarterly",
+  "Half-Yearly",
+  "Yearly",
+  "Custom"
 ];

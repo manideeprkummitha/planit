@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-
-import DialogBase from '@/components/sub_components/dialog/DialogBase';
-import DialogActions from '@/components/sub_components/dialog/DialogActions';
-import BucketSettingsForm from '@/components/sub_components/forms/BucketSettingsForm';
+import React, { useState, useEffect } from "react";
+import DialogBase from "@/components/sub_components/dialog/DialogBase";
+import DialogActions from "@/components/sub_components/dialog/DialogActions";
+import BucketSettingsForm from "@/components/sub_components/forms/BucketSettingsForm";
 
 interface Bucket {
-  id: string;
-  title: string;
+  id: string;          // We'll store the actual ID here
+  name: string;
   description: string;
+  // optional: priority_level?: number;
 }
 
 interface BucketsSettingsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (buckets: Bucket[]) => void;
+  onSave: (buckets: Bucket[]) => void; // or you can remove if you don't need "save" callback
 }
 
 const BucketsSettingsDialog: React.FC<BucketsSettingsDialogProps> = ({
@@ -23,28 +23,45 @@ const BucketsSettingsDialog: React.FC<BucketsSettingsDialogProps> = ({
   onOpenChange,
   onSave,
 }) => {
-  const initialBuckets: Bucket[] = [
-    { id: '1', title: 'Bucket 1', description: 'This is bucket 1' },
-    { id: '2', title: 'Bucket 2', description: 'This is bucket 2' },
-    { id: '3', title: 'Bucket 3', description: 'This is bucket 3' },
-    { id: '4', title: 'Bucket 4', description: 'This is bucket 4' },
-    { id: '5', title: 'Bucket 5', description: 'This is bucket 5' },
-    { id: '6', title: 'Bucket 6', description: 'This is bucket 6' },
-    { id: '7', title: 'Bucket 7', description: 'This is bucket 7' },
-    { id: '8', title: 'Bucket 8', description: 'This is bucket 8' },
-    { id: '9', title: 'Bucket 9', description: 'This is bucket 9' },
-    { id: '10', title: 'Bucket 10', description: 'This is bucket 10' },
-  ];
+  const [buckets, setBuckets] = useState<Bucket[]>([]);
 
-  const [buckets, setBuckets] = useState<Bucket[]>(initialBuckets);
+  // Fetch the buckets when the dialog opens
+  useEffect(() => {
+    if (open) {
+      fetchBuckets();
+    }
+  }, [open]);
 
+  async function fetchBuckets() {
+    try {
+      const response = await fetch("/api/buckets");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch buckets. Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      // If your data has $id, rename it to id, etc.
+      // For example:
+      const mapped = data.map((item: any) => ({
+        id: item.$id,            // rename $id to id
+        name: item.name,
+        description: item.description,
+      }));
+      setBuckets(mapped);
+    } catch (error) {
+      console.error("Error fetching buckets:", error);
+    }
+  }
+
+  // "Save" just calls a parent callback and closes
+  // (the actual priority update logic is done in the form on drag)
   const handleSave = () => {
-    onSave(buckets);
-    onOpenChange(false); // Close the dialog after saving
+    onSave?.(buckets);
+    onOpenChange(false);
   };
 
   const handleCancel = () => {
-    onOpenChange(false); // Close the dialog without saving
+    onOpenChange(false);
   };
 
   return (
@@ -57,19 +74,20 @@ const BucketsSettingsDialog: React.FC<BucketsSettingsDialogProps> = ({
         <DialogActions
           buttons={[
             {
-              text: 'Cancel',
-              color: 'bg-red-600 hover:bg-red-700 text-white',
+              text: "Cancel",
+              color: "bg-red-600 hover:bg-red-700 text-white",
               onClick: handleCancel,
             },
             {
-              text: 'Save',
-              color: 'bg-blue-600 hover:bg-blue-700 text-white',
+              text: "Save",
+              color: "bg-blue-600 hover:bg-blue-700 text-white",
               onClick: handleSave,
             },
           ]}
         />
       }
     >
+      {/* Pass the fetched buckets to the drag-and-drop form */}
       <BucketSettingsForm buckets={buckets} setBuckets={setBuckets} />
     </DialogBase>
   );

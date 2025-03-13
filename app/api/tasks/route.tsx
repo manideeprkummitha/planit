@@ -118,6 +118,8 @@ export async function POST(req: Request) {
     task_delegated_to,
     task_meeting,
     task_notify,
+    task_recurring,
+    task_recurring_frequency,
     task_notes,
   } = body;
 
@@ -144,6 +146,8 @@ export async function POST(req: Request) {
         task_delegated_to,
         task_meeting,
         task_notify,
+        task_recurring,
+        task_recurring_frequency,
         task_notes,
       }
     );

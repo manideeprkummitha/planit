@@ -21,7 +21,7 @@ export const Hint = ({ label, children, side = 'top', align = 'start' }: HintPro
                 <TooltipTrigger asChild>
                     {children}
                 </TooltipTrigger>
-                <TooltipContent side={side} align={align} className="bg-gray-200 text-black border-white/5">
+                <TooltipContent side={side} align={align} className="bg-zinc-200 text-black border-white/5">
                   <p className="font-medium text-md">
                     {label}
                   </p>

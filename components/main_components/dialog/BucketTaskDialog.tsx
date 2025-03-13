@@ -38,6 +38,8 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, onOpenChange, bucketId, m
     task_delegated_to: "",
     task_meeting: false,
     task_notify: false,
+    task_recurring: false,
+    task_recurring_frequency:"",
     task_notes: "",
   });
 
@@ -55,6 +57,8 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, onOpenChange, bucketId, m
         task_delegated_to: "",
         task_meeting: false,
         task_notify: false,
+        task_recurring: false,
+        task_recurring_frequency:"",    
         task_notes: "",
       });
     }
@@ -85,6 +89,8 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, onOpenChange, bucketId, m
         task_delegated_to: formData.task_delegated_to,
         task_meeting: formData.task_meeting,
         task_notify: formData.task_notify,
+        task_recurring: formData.task_recurring,
+        task_recurring_frequency: formData.task_recurring_frequency,
         task_notes: formData.task_notes,
       };
 
@@ -114,6 +120,8 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, onOpenChange, bucketId, m
         task_delegated_to: "",
         task_meeting: false,
         task_notify: false,
+        task_recurring: false,
+        task_recurring_frequency:"",    
         task_notes: "",
       });
 

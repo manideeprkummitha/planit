@@ -20,6 +20,8 @@ export function DataTableToolbar<TData>({ table, bucket_Id }: DataTableToolbarPr
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isTasksPage, setIsTasksPage] = useState(false);
 
+  console.log("table data:", table);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setIsTasksPage(window.location.pathname === "/tasks");

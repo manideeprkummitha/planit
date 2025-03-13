@@ -7,8 +7,10 @@ import BucketsDialog from '@/components/main_components/dialog/BucketsDialog';
 import BucketsSettingsDialog from '@/components/main_components/dialog/BucketSetttingsDialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const Buckets = () => {
+  const { user } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
   const [bucketsData, setBucketsData] = useState<any[]>([]);
@@ -28,8 +30,41 @@ const Buckets = () => {
     fetchBuckets();
   }, []);
 
+  // const handleCreateBucket = async (bucketData: any) => {
+  //   try {
+  //     const response = await fetch('/api/buckets', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(bucketData),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to create bucket');
+  //     }
+
+  //     const newBucket = await response.json();
+  //     setBucketsData((prev) => [...prev, newBucket]);
+
+  //     toast({
+  //       title: 'Bucket Created',
+  //       description: `Bucket "${bucketData.name}" has been successfully created.`,
+  //       variant: 'default',
+  //     });
+  //   } catch (error) {
+  //     console.error('Error creating bucket:', error);
+  //     toast({
+  //       title: 'Error',
+  //       description: 'Could not create the bucket. Please try again.',
+  //       variant: 'destructive',
+  //     });
+  //   }
+  // };
+
   const handleCreateBucket = async (bucketData: any) => {
     try {
+      // 1. Create the bucket in your database
       const response = await fetch('/api/buckets', {
         method: 'POST',
         headers: {
@@ -45,6 +80,27 @@ const Buckets = () => {
       const newBucket = await response.json();
       setBucketsData((prev) => [...prev, newBucket]);
 
+        // 2. Send a notification through your Next.js API proxy
+        await fetch('/api/notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user?.sub || user?.id || "anonymous",
+            title: "New Bucket Created",
+            body: `You've created a new bucket: "${bucketData.name}"`,
+            type: "bucket_created",
+            urgent: false,
+            data: {
+              bucketId: newBucket.$id,
+              bucketName: bucketData.name,
+              action: "create"
+            }
+          })
+        });
+
+      // 3. Show toast notification
       toast({
         title: 'Bucket Created',
         description: `Bucket "${bucketData.name}" has been successfully created.`,
@@ -114,7 +170,11 @@ const Buckets = () => {
             priority={bucket.priority}
             status={bucket.status}
             type={bucket.type}
-            tag={bucket.tag[0]}
+            tag={
+              Array.isArray(bucket.tag) && bucket.tag.length > 0
+                ? bucket.tag[0]
+                : "No tag"
+            }            
             progress={50}  // Placeholder
             assignedTaskCount={10}  // Placeholder
             completedTaskCount={5}  // Placeholder
